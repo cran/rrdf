@@ -23,7 +23,7 @@ new.rdf <- function() {
 }
 
 load.rdf <- function(filename, format="RDF/XML") {
-	formats = c("RDF/XML", "Notation3", "N-TRIPLES", "N3")
+	formats = c("RDF/XML", "TURTLE", "N-TRIPLES", "N3")
 	if (!(format %in% formats))
 		stop("Formats must be one in: ", formats)
     model <- .jcall(
@@ -32,6 +32,19 @@ load.rdf <- function(filename, format="RDF/XML") {
         "loadRdf", filename, format
     )
     return(model)
+}
+
+save.rdf <- function(store, filename, format="RDF/XML") {
+	formats = c("RDF/XML", "RDF/XML-ABBREV", "N3")
+	if (!(format %in% formats))
+		stop("Formats must be one in: ", formats)
+	if (format == "RDF/XML") format <- "RDF/XML-ABBREV";
+	.jcall(
+			"com/github/egonw/rrdf/RJenaHelper",
+			"V",
+			"saveRdf", store, filename, format
+	)
+	return(store)
 }
 
 combine.rdf <- function(model1, model2) {
@@ -67,6 +80,32 @@ sparql.rdf <- function(model, sparql) {
         stop(exception)
     }
     return(.stringMatrix.to.matrix(stringMat))
+}
+
+add.triple <- function(store,
+	subject="http://example.org/Subject",
+	predicate="http://example.org/Predicate",
+	object="http://example.org/Object") {
+	.jcall(
+		"com/github/egonw/rrdf/RJenaHelper",
+		"V",
+		"addObjectProperty", store,
+		subject, predicate, object
+	)
+	store
+}
+
+add.data.triple <- function(store,
+		subject="http://example.org/Subject",
+		predicate="http://example.org/Predicate",
+		data="Value") {
+	.jcall(
+		"com/github/egonw/rrdf/RJenaHelper",
+		"V",
+		"addDataProperty", store,
+		subject, predicate, data
+	)
+	store
 }
 
 .stringMatrix.to.matrix <- function(stringMatrix) {
