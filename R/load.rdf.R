@@ -133,6 +133,19 @@ construct.rdf <- function(model, sparql) {
 	return(newModel)
 }
 
+construct.remote <- function(endpoint, sparql) {
+	newModel <- .jcall(
+			"com/github/egonw/rrdf/RJenaHelper",
+			"Lcom/hp/hpl/jena/rdf/model/Model;",
+			"constructRemote", endpoint, sparql
+	)
+	exception <- .jgetEx(clear = TRUE)
+	if (!is.null(exception)) {
+		stop(exception)
+	}
+	return(newModel)
+}
+
 .stringMatrix.to.matrix <- function(stringMatrix) {
     nrows <- .jcall(stringMatrix, "I", "getRowCount")
     ncols <- .jcall(stringMatrix, "I", "getColumnCount")
@@ -142,9 +155,32 @@ construct.rdf <- function(model, sparql) {
       colNames = c(colNames, .jcall(stringMatrix, "S", "getColumnName", col))
       for (row in 1:nrows) {
         value = .jcall(stringMatrix, "S", "get", row, col)
-        matrix[row,col] = value
+        matrix[row,col] = .rdf.to.native(value)
       }
     }
     colnames(matrix) <- colNames
     matrix
+}
+
+.rdf.to.native <- function(string) {
+	result = string
+	if (is.null(string)) {
+		result = NA;
+	} else if (is.na(string)) {
+		# just return NA
+	} else {
+		c = strsplit(string, "\\^\\^")[[1]]
+		if (length(c) == 2) {
+			# possibly a RDF data type
+			datatype = c[2]
+			if (datatype == "http://www.w3.org/2001/XMLSchema#double") {
+				result = as.numeric(c[1])
+			} else if (datatype == "http://www.w3.org/2001/XMLSchema#float") {
+				result = as.numeric(c[1])
+			} else if (datatype == "http://www.w3.org/2001/XMLSchema#string") {
+				result = c[1]
+			}
+		}
+	}
+	result
 }
