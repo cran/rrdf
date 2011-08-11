@@ -13,25 +13,41 @@
 # You should have received a copy of the GNU Affero General Public License
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
-new.rdf <- function() {
-	model <- .jcall(
+new.rdf <- function(ontology=TRUE) {
+    if (ontology) {
+		model <- .jcall(
+			"com/github/egonw/rrdf/RJenaHelper",
+			"Lcom/hp/hpl/jena/rdf/model/Model;",
+			"newOntoRdf"
+		)
+	} else {
+		model <- .jcall(
 			"com/github/egonw/rrdf/RJenaHelper",
 			"Lcom/hp/hpl/jena/rdf/model/Model;",
 			"newRdf"
-	)
+		)
+	}
 	return(model)
 }
 
-load.rdf <- function(filename, format="RDF/XML") {
+load.rdf <- function(filename, format="RDF/XML", appendTo=NULL) {
 	formats = c("RDF/XML", "TURTLE", "N-TRIPLES", "N3")
 	if (!(format %in% formats))
 		stop("Formats must be one in: ", formats)
-    model <- .jcall(
-        "com/github/egonw/rrdf/RJenaHelper",
-        "Lcom/hp/hpl/jena/rdf/model/Model;",
-        "loadRdf", filename, format
-    )
-    return(model)
+	if (is.null(appendTo)) {
+	    model <- .jcall(
+    	    "com/github/egonw/rrdf/RJenaHelper",
+       		"Lcom/hp/hpl/jena/rdf/model/Model;",
+       		"loadRdf", filename, format
+    	)
+        return(model)
+    } else {
+	    model <- .jcall(
+    	    "com/github/egonw/rrdf/RJenaHelper",
+       		"Lcom/hp/hpl/jena/rdf/model/Model;",
+       		"loadRdf", filename, format, appendTo
+    	)
+    }
 }
 
 save.rdf <- function(store, filename, format="RDF/XML") {
@@ -44,7 +60,6 @@ save.rdf <- function(store, filename, format="RDF/XML") {
 			"V",
 			"saveRdf", store, filename, format
 	)
-	return(store)
 }
 
 combine.rdf <- function(model1, model2) {
@@ -104,20 +119,29 @@ add.triple <- function(store,
 		"addObjectProperty", store,
 		subject, predicate, object
 	)
-	store
 }
 
 add.data.triple <- function(store,
 		subject="http://example.org/Subject",
 		predicate="http://example.org/Predicate",
-		data="Value") {
-	.jcall(
-		"com/github/egonw/rrdf/RJenaHelper",
-		"V",
-		"addDataProperty", store,
-		subject, predicate, data
-	)
-	store
+		data="Value",
+		type=NULL) {
+	if (is.null(type)) {
+		.jcall(
+			"com/github/egonw/rrdf/RJenaHelper",
+			"V",
+			"addDataProperty", store,
+			subject, predicate, data
+		)
+	} else {
+		.jcall(
+			"com/github/egonw/rrdf/RJenaHelper",
+			"V",
+			"addDataProperty", store,
+			subject, predicate, data,
+			type
+		)
+	}
 }
 
 construct.rdf <- function(model, sparql) {
@@ -146,19 +170,39 @@ construct.remote <- function(endpoint, sparql) {
 	return(newModel)
 }
 
+add.prefix <- function(store=NULL, prefix=NULL, namespace=NULL) {
+    if (is.null(store)) stop("A store must be given.")
+    if (is.null(prefix)) stop("A prefix must be given.")
+    if (is.null(namespace)) stop("A namespace must be given.")
+
+	.jcall(
+		"com/github/egonw/rrdf/RJenaHelper",
+		"V",
+		"addPrefix", store, prefix, namespace
+	)
+	exception <- .jgetEx(clear = TRUE)
+	if (!is.null(exception)) {
+		stop(exception)
+	}
+}
+
 .stringMatrix.to.matrix <- function(stringMatrix) {
     nrows <- .jcall(stringMatrix, "I", "getRowCount")
     ncols <- .jcall(stringMatrix, "I", "getColumnCount")
-    matrix = matrix(,nrows,ncols)
-    colNames = c()
-    for (col in 1:ncols) {
-      colNames = c(colNames, .jcall(stringMatrix, "S", "getColumnName", col))
-      for (row in 1:nrows) {
-        value = .jcall(stringMatrix, "S", "get", row, col)
-        matrix[row,col] = .rdf.to.native(value)
+    if (ncols == 0 || nrows == 0) {
+      matrix = matrix(,0,0)
+    } else { 
+      matrix = matrix(,nrows,ncols)
+      colNames = c()
+      for (col in 1:ncols) {
+        colNames = c(colNames, .jcall(stringMatrix, "S", "getColumnName", col))
+        for (row in 1:nrows) {
+          value = .jcall(stringMatrix, "S", "get", row, col)
+          matrix[row,col] = .rdf.to.native(value)
+        }
       }
+      colnames(matrix) <- colNames
     }
-    colnames(matrix) <- colNames
     matrix
 }
 
