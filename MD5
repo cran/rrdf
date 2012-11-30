@@ -1,9 +1,9 @@
-8de1a73574fa8728f27ae03b023608ca *DESCRIPTION
+a0d09ec835aa7b2e6bea7f229173228c *DESCRIPTION
 c847c252de0188136580b2e62797ea6d *NAMESPACE
-0b466817499ef7fab9688d242ae5d514 *R/load.rdf.R
+5ddaa4843b6f03be803dd3db3c82bcf1 *R/load.rdf.R
 c83d0f16077822b7a14c6ef42c47b4aa *R/rrdf.R
-6f03b19b28987236762841b0e903665d *inst/doc/tutorial.Rnw
-894a2aa78b76457d3339f3a2cbbe10a0 *inst/doc/tutorial.pdf
+4ab8f691ee397ff3488933fa462d7cbc *inst/doc/tutorial.Rnw
+c8a90934f236188724e8f255faa66ecc *inst/doc/tutorial.pdf
 0638ce19d738f25f9dd1226617932f41 *inst/java/rrdf.jar
 7cd90809028bb0e07f562f1f75cd169e *man/add.data.Rd
 5a863caa2ce9fb9de5935664ce1f2a08 *man/add.prefix.Rd
@@ -19,5 +19,5 @@ e231146fa3f93bd170eb5e2cef3e5c45 *man/load.rdf.Rd
 e811435520bdbeb6855daf9968536047 *man/sparql.remote.Rd
 f0cf1b69553c592eb38227da33818242 *man/summarize.rdf.Rd
 a8a51c837157ea1629f8cfdeabac1cbf *vignettes/ex.n3
-6f03b19b28987236762841b0e903665d *vignettes/tutorial.Rnw
+4ab8f691ee397ff3488933fa462d7cbc *vignettes/tutorial.Rnw
 5d286c04f0b7efc4c7f4df9b09de6cf6 *vignettes/tutorial.bib
