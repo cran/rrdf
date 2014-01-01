@@ -1,7 +1,7 @@
 Package: rrdf
 Type: Package
 Title: rrdf - support for the Resource Description Framework
-Version: 2.0.1
+Version: 2.0.2
 Date: 2014-01-01
 Author: Egon Willighagen <egon.willighagen@gmail.com>
 Maintainer: Egon Willighagen <egon.willighagen@gmail.com>
@@ -11,7 +11,7 @@ License: AGPL-3
 LazyLoad: yes
 URL: https://github.com/egonw/rrdf
 BugReports: https://github.com/egonw/rrdf/issues
-Packaged: 2014-01-01 11:40:38 UTC; egonw
+Packaged: 2014-01-02 11:36:11 UTC; egonw
 NeedsCompilation: no
 Repository: CRAN
-Date/Publication: 2014-01-01 13:56:42
+Date/Publication: 2014-01-02 16:42:10

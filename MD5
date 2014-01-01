@@ -1,11 +1,12 @@
-ef78401e28e8d4b971f7f5959b53e3fd *DESCRIPTION
+7752417d9a7dc0d8f81faf7021d12618 *DESCRIPTION
 0c2e3beb6c752ee81b26eca83178c941 *NAMESPACE
 c95bceec5ef2391ac00caaaa36979e4c *R/load.rdf.R
 c83d0f16077822b7a14c6ef42c47b4aa *R/rrdf.R
 88c104987044d0d6d565833b67cabc52 *build/vignette.rds
+24182b4bcd4a8dfc437a21bfe05e0494 *inst/CITATION
 6c33c46fe5f8954a4a8c9493e4aedca4 *inst/doc/tutorial.R
 5fe4ad5db2bb5b80b01266c4f30dfb6e *inst/doc/tutorial.Rnw
-2ed655b6acbd2eb146bbf94d4edc0c84 *inst/doc/tutorial.pdf
+7cc4ca085c0bf60df5a38341e8ddd50d *inst/doc/tutorial.pdf
 1f75ae21728942a45b825e9a85ba5fcc *inst/java/rrdf.jar
 7cd90809028bb0e07f562f1f75cd169e *man/add.data.Rd
 5a863caa2ce9fb9de5935664ce1f2a08 *man/add.prefix.Rd
