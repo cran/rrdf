@@ -20,9 +20,9 @@ This tutorial is licensed Creative Commons BY-SA.
 \section{Introduction}
 
 After RDF and SPARQL integration into Bioclipse was finished, I realized that impact would even be larger if
-I would add support for that to R. That was in 2011. This package does just that, and allows
-to work with RDF data and perform SPARQL queries. I am indepted to Rajarshi Guha, whos rcdk
-package provided me with a template to create this package from \cite{rcdk}.
+I would add support for that to R~\cite{Willighagen2011}. That was in 2011. This package does just that, and allows
+to work with RDF data and perform SPARQL queries. I am indebted to Rajarshi Guha, whos rcdk
+package provided me with a template to create this package from \cite{Guha2007}.
 
 This tutorial will demo in two sections how RDF can be handles and how SPARQL \cite{Seaborne2009} functionality
 can be used.
@@ -50,7 +50,7 @@ ontStore = new.rdf()
 store = new.rdf(ontology=FALSE)
 @
 
-The store is in fact a Jave object form the Jena library, so that simply printing the object
+The store is in fact a Java object form the Jena library, so that simply printing the object
 is somewhat uninformative:
 
 <<>>=
@@ -83,8 +83,20 @@ add.triple(store,
 summarize.rdf(store)
 @
 
-We can see now that we have one more triple than we had earlier. The other method is
-for adding data triples, and now the last parameter is a Literal:
+We can see now that we have one more triple than we had earlier. We can also shorten this, by
+taking advantage of R magic, to:
+
+<<>>=
+add.triple(store,
+  "http://example.org/Subject",
+  "http://example.org/Predicate",
+  "http://example.org/AnotherObject"
+)
+summarize.rdf(store)
+@
+
+The second method for adding triples is for adding data triples, and now the last parameter is a
+so-called Literal:
 
 <<>>=
 add.data.triple(store,
@@ -106,7 +118,36 @@ add.data.triple(store,
 )
 @
 
-\subsection{Serialization}
+\subsection{Serialization to and from strings}
+\label{sec:string}
+
+It can be useful to serialize the storage to a string for introspection:
+
+<<>>=
+store = new.rdf(ontology=FALSE)
+add.prefix(store, "idorg", "http://identifiers.org/pubmed/")
+add.prefix(store, "bibo", "http://purl.org/ontology/bibo/")
+add.data.triple(store,
+  "http://identifiers.org/pubmed/23657106",
+  "http://purl.org/ontology/bibo/pmid",
+  "23657106"
+)
+cat(asString.rdf(store, format="N3"))
+@
+
+And, one can also populate a storage from a string:
+
+<<>>=
+store = fromString.rdf(paste(
+  "<http://example.org/Subject>",
+  "<http://example.org/Predicate>",
+  "<http://example.org/AnotherObject>",
+  "."
+), format="N-TRIPLES");
+summarize.rdf(store)
+@
+
+\subsection{Serialization to files}
 
 A store is nice, but to interoperate with other tools, we commonly have serialize the data. For this, we can use
 the \textit{save.rdf} method (the filename is POSIX-based):
@@ -135,8 +176,8 @@ save.rdf(store, tempfile(fileext=".n3"), format="N3")
 The output will then resemble:
 
 \begin{verbatim}
-\@prefix ex:      <http://example.org/> .
-\@prefix xsd:     <http://www.w3.org/2001/XMLSchema#> .
+@prefix ex:      <http://example.org/> .
+@prefix xsd:     <http://www.w3.org/2001/XMLSchema#> .
 
 ex:Subject
       ex:Predicate "Value" , "Value"^^xsd:string , ex:Object .
@@ -149,9 +190,9 @@ Minting triples one by one can be fun for a while, but soon you will want to jus
 a data file. This is done with the \textit{load.rdf} method. Let's read this file:
 
 \begin{verbatim}
-\@prefix rdfs:    <http://www.w3.org/rdf/schema/#> .
-\@prefix ex:      <http://example.org/> .
-\@prefix xsd:     <http://www.w3.org/2001/XMLSchema#> .
+@prefix rdfs:    <http://www.w3.org/rdf/schema/#> .
+@prefix ex:      <http://example.org/> .
+@prefix xsd:     <http://www.w3.org/2001/XMLSchema#> .
 
 ex:Methane
   rdfs:label "methane"^^xsd:string ;
